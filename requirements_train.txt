@@ -7,6 +7,6 @@ jsonlines == 3.1.0
 absl-py == 1.2.0
 tqdm == 4.65.0
 
-torch
+torch == 1.13.0
 pytorch-lightning
 torchmetrics
