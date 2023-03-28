@@ -9,5 +9,5 @@ tqdm == 4.65.0
 
 torch == 1.13.1
 torchvision
-pytorch-lightning
+lightning
 torchmetrics
