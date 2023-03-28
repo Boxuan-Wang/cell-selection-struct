@@ -66,3 +66,16 @@ def parseEvidence(evidenceStr):
           evidence_dict[(title,table_ind)] = []
           evidence_dict[(title,table_ind)].append(cell)
   return evidence_dict
+
+# delete the link format in the WIKI database
+# the link format is like   '[[EFL_Cup|League Cup]]'
+def sanitise_link_format(text:str) -> str:
+  while True:
+    link_loc = text.find('[[')
+    if link_loc == -1:
+      break
+    link_end = text.find('[[')
+    link_mid = text.find('|', link_loc, link_end)
+    text = text[:link_loc] + text[link_mid+1 : link_end] + text[link_end+2:]
+  
+  return text
