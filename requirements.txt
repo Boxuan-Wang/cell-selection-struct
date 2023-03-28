@@ -6,7 +6,7 @@ sacrebleu == 2.2.1
 jsonlines == 3.1.0
 absl-py == 1.2.0
 packaging == 21.3
-torch
-torchmetrics
+torch == 2.0.0
+torchmetrics == 0.11.4
 pytorch-lightning == 2.0.0
-tqdm
+tqdm == 4.65.0
