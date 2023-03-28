@@ -5,7 +5,6 @@ sentencepiece == 0.1.97
 sacrebleu == 2.2.1
 jsonlines == 3.1.0
 absl-py == 1.2.0
-torch == 2.0.0
 torchmetrics == 0.11.4
 pytorch-lightning == 2.0.0
 tqdm == 4.65.0
