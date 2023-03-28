@@ -10,3 +10,4 @@ torchmetrics == 0.11.4
 pytorch-lightning == 2.0.0
 tqdm == 4.65.0
 packaging==22.0
+torch == 1.13.1
