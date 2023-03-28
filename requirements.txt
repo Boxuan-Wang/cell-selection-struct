@@ -1,0 +1,12 @@
+apsw == 3.40.1.0
+transformers == 4.23.0
+datasets == 2.4.0
+sentencepiece == 0.1.97
+sacrebleu == 2.2.1
+jsonlines == 3.1.0
+absl-py == 1.2.0
+packaging == 21.3
+torch
+torchmetrics
+
+tensorflow-text == 2.11.0
