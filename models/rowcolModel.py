@@ -46,14 +46,8 @@ class ColRowClassifier(pl.LightningModule):
 
     return loss
 
-class ColRowDataset(Dataset):
-  def __init__(self, csv_path: str, tokenizer: BertTokenizer,size_limit:int = None):
-    self.size_limit = size_limit
-    self.df = pd.read_csv(csv_path, names=['text','verdict'])
-    if size_limit is not None:
-      self.df = self.df[:size_limit]
-    text_tensors = [
-        tokenizer(
+def tokenize(text:str, tokenizer:BertTokenizer) -> Tensor:
+  return tokenizer(
             text, 
             add_special_tokens = True,
             max_length = MAX_LEN,
@@ -61,8 +55,15 @@ class ColRowDataset(Dataset):
             return_token_type_ids = True,
             truncation = True,
             return_attention_mask = True,
-            return_tensors = 'pt') for text in self.df['text']
-          ]
+            return_tensors = 'pt')
+  
+class ColRowDataset(Dataset):
+  def __init__(self, csv_path: str, tokenizer: BertTokenizer,size_limit:int = None):
+    self.size_limit = size_limit
+    self.df = pd.read_csv(csv_path, names=['text','verdict'])
+    if size_limit is not None:
+      self.df = self.df[:size_limit]
+    text_tensors = [tokenize(text,tokenize) for text in self.df['text']]
     verdict_tensors = self.df['verdict'].map(lambda b: torch.Tensor([1.0, 0.0]) if b else torch.Tensor([.0, 1.0]))
     # rev_verdict = 1 - self.df['verdict']
     # verdict_tensors = torch.Tensor(self.df['verdict'], rev_verdict)

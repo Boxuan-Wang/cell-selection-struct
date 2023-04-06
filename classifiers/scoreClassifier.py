@@ -1,6 +1,8 @@
+import torch
+import lightning.pytorch as pl
+from models.rowcolModel import ColRowClassifier
 import math
 import numpy as np
-import tensorflow as tf
 from wikiTable.table import Table
 from wikiTable.untils import preprocess_col,preprocess_row
 
@@ -15,10 +17,10 @@ class ScoreClassifier():
       relevant_num_limit:int = 10,
       minimum_score:float = 0.05
     ):
-      with tf.device('job:localhost'):
-        # todo: may need to change device
-        self.row_model = tf.saved_model.load(row_model_path)
-        self.col_model = tf.saved_model.load(col_model_path)
+      self.row_model = ColRowClassifier.load_from_checkpoint(row_model_path)
+      self.row_model.eval()
+      self.col_model = ColRowClassifier.load_from_checkpoint(col_model_path)
+      self.col_model.eval()
       self.wiki_db = db_connection
       self.num_limit = relevant_num_limit
       self.min_score = minimum_score
@@ -30,8 +32,8 @@ class ScoreClassifier():
       table_content:list[list[dict]]
     ) -> list[float]:
       ret = []
-      col_strings = preprocess_row(claim,table_content)
-      for i,text in enumerate(col_strings):
+      row_strings = preprocess_row(claim,table_content)
+      for i,text in enumerate(row_strings):
         with tf.device('/job:localhost'):
           # todo: may need to change device
           result = self.col_model([text])
