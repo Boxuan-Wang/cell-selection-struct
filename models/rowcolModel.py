@@ -12,6 +12,7 @@ class ColRowClassifier(pl.LightningModule):
   def __init__(self,lr = 3e-5):
     super().__init__()
     self.lr = lr
+    self.softmax = nn.Softmax(dim=1)
     self.bert_model = BertModel.from_pretrained('bert-base-uncased')
     self.classify = nn.Sequential(nn.Flatten(),nn.Dropout(p=0.1),nn.Linear(768*MAX_LEN,2))
 
@@ -48,8 +49,7 @@ class ColRowClassifier(pl.LightningModule):
   
   def predict(self, x):
     logits = self.forward(x)
-    m = torch.nn.Softmax(dim=1)
-    return m(logits).detach().numpy()[0][0]
+    return self.softmax(logits).detach().numpy()[0][0]
  
 def tokenize(text:str, tokenizer:BertTokenizer) -> Tensor:
   return tokenizer(

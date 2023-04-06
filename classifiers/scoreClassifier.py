@@ -1,10 +1,12 @@
 import torch
 import lightning.pytorch as pl
+from transformers import BertTokenizer
 from models.rowcolModel import ColRowClassifier
 import math
 import numpy as np
 from wikiTable.table import Table
 from wikiTable.untils import preprocess_col,preprocess_row
+
 
 
 class ScoreClassifier():
@@ -17,6 +19,7 @@ class ScoreClassifier():
       relevant_num_limit:int = 10,
       minimum_score:float = 0.05
     ):
+      self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
       self.row_model = ColRowClassifier.load_from_checkpoint(row_model_path)
       self.row_model.eval()
       self.col_model = ColRowClassifier.load_from_checkpoint(col_model_path)
@@ -34,11 +37,9 @@ class ScoreClassifier():
       ret = []
       row_strings = preprocess_row(claim,table_content)
       for i,text in enumerate(row_strings):
-        with tf.device('/job:localhost'):
-          # todo: may need to change device
-          result = self.col_model([text])
-        result = (result.numpy())[0][0]
-        result = 1/(1+math.exp(-result))
+        tok = ColRowClassifier.tokenize(text, self.tokenizer)
+        result = self.row_model.predict(tok)
+        ret.append(result)
         ret.append(result)
       return ret
     
@@ -50,11 +51,8 @@ class ScoreClassifier():
       ret = []
       col_strings = preprocess_col(claim,table_content)
       for i,text in enumerate(col_strings):
-        with tf.device('/job:localhost'):
-          # todo: may need to change device
-          result = self.col_model([text])
-        result = (result.numpy())[0][0]
-        result = 1/(1+math.exp(-result))
+        tok = ColRowClassifier.tokenize(text, self.tokenizer)
+        result = self.col_model.predict(tok)
         ret.append(result)
       return ret
     
