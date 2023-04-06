@@ -68,7 +68,7 @@ class ColRowDataset(Dataset):
     self.df = pd.read_csv(csv_path, names=['text','verdict'])
     if size_limit is not None:
       self.df = self.df[:size_limit]
-    text_tensors = [tokenize(text,tokenize) for text in self.df['text']]
+    text_tensors = [tokenize(text,tokenizer) for text in self.df['text']]
     verdict_tensors = self.df['verdict'].map(lambda b: torch.Tensor([1.0, 0.0]) if b else torch.Tensor([.0, 1.0]))
     # rev_verdict = 1 - self.df['verdict']
     # verdict_tensors = torch.Tensor(self.df['verdict'], rev_verdict)
