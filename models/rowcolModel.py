@@ -47,9 +47,9 @@ class ColRowClassifier(pl.LightningModule):
     return loss
   
   def predict(self, x):
-		logits = self.forward(x)
-		m = torch.nn.Softmax(dim=1)
-		return m(logits).detach().numpy()[0][0]
+    logits = self.forward(x)
+    m = torch.nn.Softmax(dim=1)
+    return m(logits).detach().numpy()[0][0]
  
 def tokenize(text:str, tokenizer:BertTokenizer) -> Tensor:
   return tokenizer(
