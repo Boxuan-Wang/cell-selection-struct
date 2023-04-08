@@ -66,7 +66,9 @@ def preprocess_col_single_table(table_id, relevant_cells, claim, db_connection,)
     col_render_id = 0
     for i in range(col_id-1):
       col_render_id += int(row_of_the_cell[i]['column_span'])
-    relevant_cols.add(col_render_id)
+    for i in range(int(row_of_the_cell[col_id]['column_span'])):
+      # if the cell covers multiple columns, all columns are regarded as relevant
+      relevant_cols.add(col_render_id + i)
   print(relevant_cols)
   processed_strings = parse_col(table_content)
   for i,processed_string in enumerate(processed_strings):
