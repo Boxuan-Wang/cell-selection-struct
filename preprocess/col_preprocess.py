@@ -65,7 +65,7 @@ def preprocess_col_single_table(table_id, relevant_cells, claim, db_connection,)
     row_of_the_cell = table_content[row_id]
     col_render_id = 0
     for i in range(col_id-1):
-      col_render_id += row_of_the_cell[i]['column_span']
+      col_render_id += int(row_of_the_cell[i]['column_span'])
     relevant_cols.add(col_render_id)
   print(relevant_cols)
   processed_strings = parse_col(table_content)
