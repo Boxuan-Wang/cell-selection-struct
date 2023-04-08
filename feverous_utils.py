@@ -76,6 +76,9 @@ def sanitise_link_format(text:str) -> str:
       break
     link_end = text.find(']]')
     link_mid = text.find('|', link_loc, link_end)
+    if link_end==-1 or link_mid==-1:
+        # this is a not expected case, break to avoid dead loop
+        break
     text = text[:link_loc] + text[link_mid+1 : link_end] + text[link_end+2:]
   
   return text
