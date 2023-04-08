@@ -130,4 +130,5 @@ def preprocess_col(dataset_path:str, save_path:str, db_connection: WIKI_connecti
         relevant_cells = evidence[table_id]
         csv_rows = preprocess_col_single_table(table_id,relevant_cells,claim,db_connection)
         for csv_row in csv_rows:
+          print(csv_row)
           writer.writerow(csv_row)
