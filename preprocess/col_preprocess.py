@@ -62,9 +62,20 @@ def preprocess_col_single_table(table_id, relevant_cells, claim, db_connection,)
     # this is needed because in  table representation in wiki database
     # a cell may have multi column span
     # and will make the col_id a chaos
+    if row_id >= len(table_content):
+      # row_id index error
+      print('*******************')
+      print('Row id index error')
+      print(f'table id: {table_id}, relevant cell id:{relevant_cell}')
+      print('*******************')
+      continue
     row_of_the_cell = table_content[row_id]
     if col_id >= len(row_of_the_cell):
       # to avoid index overflow,   some tables in the wiki database are corrupted
+      print('*******************')
+      print('Column id index error')
+      print(f'table id: {table_id}, relevant cell id:{relevant_cell}')
+      print('*******************')
       continue
     col_render_id = 0
     for i in range(col_id):
