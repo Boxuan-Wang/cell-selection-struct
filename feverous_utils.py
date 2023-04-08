@@ -1,6 +1,6 @@
 import json
 from json import JSONDecodeError
-
+import ast
 
 # define util functions to parse the evidence from FEVEROUS dataset
 
@@ -35,17 +35,17 @@ def classifyEvidence(evidence_id):
   return ret
 
 def parseEvidence(evidenceStr):
-  evidenceStr = str(evidenceStr)
   evidence_list = parseEvidenceList(evidenceStr)
   
   evidence_dict = {}
-  # f = open("/content/drive/MyDrive/part2Project/errorJSON.txt",'w')
   for string in evidence_list:
-    string = string.replace("\'","\"")
+    ori_string = string
     try:
-      evidence = json.loads(string)
+      # evidence = json.loads(string.strip())
+      evidence = ast.literal_eval(string.strip())
     except JSONDecodeError:
       print(f"ERROR!When parsing evidence: {string}")
+      print(ori_string)
       # f.write(string + "\n")
       # error = error + 1
       continue
