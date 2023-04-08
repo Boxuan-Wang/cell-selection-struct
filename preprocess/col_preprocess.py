@@ -64,7 +64,7 @@ def preprocess_col_single_table(table_id, relevant_cells, claim, db_connection,)
     # and will make the col_id a chaos
     row_of_the_cell = table_content[row_id]
     col_render_id = 0
-    for i in range(col_id-1):
+    for i in range(col_id):
       col_render_id += int(row_of_the_cell[i]['column_span'])
     for i in range(int(row_of_the_cell[col_id]['column_span'])):
       # if the cell covers multiple columns, all columns are regarded as relevant
