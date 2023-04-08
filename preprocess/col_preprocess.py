@@ -63,6 +63,9 @@ def preprocess_col_single_table(table_id, relevant_cells, claim, db_connection,)
     # a cell may have multi column span
     # and will make the col_id a chaos
     row_of_the_cell = table_content[row_id]
+    if col_id >= len(row_of_the_cell):
+      # to avoid index overflow,   some tables in the wiki database are corrupted
+      continue
     col_render_id = 0
     for i in range(col_id):
       col_render_id += int(row_of_the_cell[i]['column_span'])
