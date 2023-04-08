@@ -50,6 +50,7 @@ Proprecess the col relevancy for a single evidence table.
 Input: claim, table_id, relevant cell ids, db_connection
 '''
 def preprocess_col_single_table(table_id, relevant_cells, claim, db_connection,):
+  csv_rows = []
   (title,ind_table) = table_id
   # query WIKI database to get table content
   table_content = db_connection.query_wiki_table(title,ind_table)
@@ -72,7 +73,8 @@ def preprocess_col_single_table(table_id, relevant_cells, claim, db_connection,)
     relevant = i in relevant_cols
     combined_str = claim + '[SEP]' + processed_string
     csv_row = [combined_str,relevant]
-  return None
+    csv_rows.append(csv_row)
+  return csv_rows
 
 '''
 input: the samples from FEVEROUS, 
