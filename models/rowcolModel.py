@@ -1,5 +1,6 @@
 import torch
 from torch.utils.data import Dataset, DataLoader, random_split, SequentialSampler
+from ..feverous_utils import sanitise_link_format
 import os
 import pandas as pd
 from torch import optim, nn, utils, Tensor
@@ -63,11 +64,13 @@ def tokenize(text:str, tokenizer:BertTokenizer) -> Tensor:
             return_tensors = 'pt')
   
 class ColRowDataset(Dataset):
-  def __init__(self, csv_path: str, tokenizer: BertTokenizer,size_limit:int = None):
+  def __init__(self, csv_path: str, tokenizer: BertTokenizer,size_limit:int = None, sanitise_link:bool = False):
     self.size_limit = size_limit
     self.df = pd.read_csv(csv_path, names=['text','verdict'])
     if size_limit is not None:
       self.df = self.df[:size_limit]
+    if sanitise_link:
+      self.df['text'] = self.df['text'].map(sanitise_link_format)
     text_tensors = [tokenize(text,tokenizer) for text in self.df['text']]
     verdict_tensors = self.df['verdict'].map(lambda b: torch.Tensor([1.0, 0.0]) if b else torch.Tensor([.0, 1.0]))
     # rev_verdict = 1 - self.df['verdict']
