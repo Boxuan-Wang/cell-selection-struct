@@ -1,11 +1,11 @@
 import torch
 import lightning.pytorch as pl
 from transformers import BertTokenizer
-from models.rowcolModel import ColRowClassifier
+from ..models.rowcolModel import ColRowClassifier
 import math
 import numpy as np
-from wikiTable.table import Table
-from wikiTable.untils import preprocess_col,preprocess_row
+from ..wikiTable.table import Table
+from ..wikiTable.untils import preprocess_col,preprocess_row
 
 
 
@@ -14,7 +14,6 @@ class ScoreClassifier():
       self,
       row_model_path,
       col_model_path,
-      # todo: implement wikiConnection class
       db_connection,
       relevant_num_limit:int = 10,
       minimum_score:float = 0.05

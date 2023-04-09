@@ -1,8 +1,8 @@
-from classifiers.scoreClassifier import ScoreClassifier
-from textGenerater.TtTGeneration import TextGenerater
-from wikiDatabase.wikiConnection import WIKI_connection
+from ..classifiers.scoreClassifier import ScoreClassifier
+from ..textGenerater.TtTGeneration import TextGenerater
+from ..wikiDatabase.wikiConnection import WIKI_connection
 # from wikiTable.table import Table
-from scripts.feverous_utils import parseEvidence
+from ..feverous_utils import parseEvidence
 # from tqdm import tqdm
 import six
 import json

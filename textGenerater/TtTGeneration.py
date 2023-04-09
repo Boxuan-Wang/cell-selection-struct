@@ -1,9 +1,11 @@
 import torch
 from transformers import AutoConfig
-from textGenerater.model.tokenizer import CustomT5TokenizerFast
-from textGenerater.model.modeling_t5 import T5ForConditionalGeneration
-from textGenerater.preprocess.table_linearization import linearize_table_with_index
-from wikiDatabase.wikiConnection import WIKI_connection
+from model.tokenizer import CustomT5TokenizerFast
+from model.modeling_t5 import T5ForConditionalGeneration
+from preprocess.table_linearization import linearize_table_with_index
+from ..wikiDatabase.wikiConnection import WIKI_connection
+from ..feverous_utils import sanitise_link_format
+
 
 class TextGenerater:
     def __init__(self, model_path):
@@ -12,26 +14,15 @@ class TextGenerater:
         self.lattice_model.load_state_dict(torch.load(model_path,map_location = torch.device('cuda')))
         self.lattice_model.eval()
     
-    def sanitise_value(self, cell_value):
-        while True:
-            link_start = cell_value.find('[[')     
-            link_end = cell_value.find(']]')
-            if link_start == -1 or link_end == -1:
-                break 
-            bar_ind = cell_value.find('|', link_start, link_end)
-
-        cell_value = cell_value[:link_start] + cell_value[bar_ind+1:link_end] + cell_value[link_end+2:]
-
-        return cell_value
 
     def sanitise_table_content(self,table_content):
         """
-        Sanitise table content so that the hyper-links are free of '[]'
+        Sanitise table content so that the hyper-links are free of '[[]]' format
         """
         for cell_row in table_content:
             for cell in cell_row:
 
-                cell['value'] = self.sanitise_value(cell['value'])
+                cell['value'] = sanitise_link_format(cell['value'])
 
         return table_content
     
