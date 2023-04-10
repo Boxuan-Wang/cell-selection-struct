@@ -5,7 +5,7 @@ from ..models.rowcolModel import ColRowClassifier
 import math
 import numpy as np
 from ..wikiTable.table import Table
-from ..wikiTable.utils import preprocess_col,preprocess_row
+from ..wikiTable.utils import preprocess_cell
 
 
 
@@ -24,45 +24,25 @@ class CellClassifier():
       self.num_limit = relevant_num_limit
       self.min_score = minimum_score
       print("Score model loaded.")
-    
-    # def score_rows_in_table(
-    #   self, 
-    #   claim:str,
-    #   table_content:list[list[dict]]
-    # ) -> list[float]:
-    #   ret = []
-    #   row_strings = preprocess_row(claim,table_content)
-    #   for i,text in enumerate(row_strings):
-    #     tok = ColRowClassifier.tokenize(text, self.tokenizer)
-    #     result = self.row_model.predict(tok)
-    #     ret.append(result)
-    #     ret.append(result)
-    #   return ret
-    
-    # def score_cols_in_table(
-    #   self,
-    #   claim:str,
-    #   table_content:list[list[dict]]
-    # ) -> list[float]:
-    #   ret = []
-    #   col_strings = preprocess_col(claim,table_content)
-    #   for i,text in enumerate(col_strings):
-    #     tok = ColRowClassifier.tokenize(text, self.tokenizer)
-    #     result = self.col_model.predict(tok)
-    #     ret.append(result)
-    #   return ret
-    
+      
     def classify_cells(
       self,
       claim:str,
       table_content:list[list[dict]]
     ) -> Table:
-      row_result = self.classify_table_by_row(claim,table_content)
-      col_result = self.classify_table_by_col(claim,table_content)
-      cell_scores = np.outer(row_result,col_result).tolist()
+      cell_strings = preprocess_cell(claim, table_content)
+      result = []
+      for i in range(len(cell_strings)):
+        result_row = []
+        for j in range(len(cell_strings[i])):
+          text = cell_strings[i][j]
+          tok = ColRowClassifier.tokenize(text, self.tokenizer)
+          score = self.cell_model.predict(tok)
+          result_row.append(score)
+        result.append(result_row)
       
       ret_table = Table(table_content)
-      ret_table.mark_cells_by_score(cell_scores, self.num_limit,self.min_score)
+      ret_table.mark_cells_by_score_cell_version(result, self.num_limit,self.min_score)
       
       return ret_table
     

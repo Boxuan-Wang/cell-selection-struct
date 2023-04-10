@@ -113,6 +113,35 @@ class Table:
         else:
           op_cell.set_colour('red')
           marked_cell_num += 1
+  
+  '''
+  The version for cell classification. Here, scores are in the unit of cells (not in span), i.e. different rows may have different lengths
+  '''
+  def mark_cells_by_score_cell_version(self, scores:List[List[int]], num_limit:int, min_score:float):
+    marked_cell_num = 0
+    score_queue = queue.PriorityQueue()
+    for i in range(len(scores)):
+      for j in range(len(scores[i])):
+        score_queue.put((1-scores[i][j],[i,j]))
+    while marked_cell_num < num_limit:
+      if score_queue.empty():
+        break
+      else:
+        value,id = score_queue.get()
+        if value > 1 - min_score:
+          break
+        x,y = id
+        try:
+          op_cell = self.cell_table[x][y]
+        except IndexError:
+          # todo: find a better way to record error
+          print("INDEX ERROR")
+          print(f"Position ({x},{y})")
+        if op_cell.selected():
+          continue
+        else:
+          op_cell.set_colour('red')
+          marked_cell_num += 1
 
 
   def generate_HTML(self) -> str:

@@ -50,7 +50,7 @@ def preprocess_col(
 def preprocess_cell(
     claim: str,
     table_content:list[list[dict]]
-) -> list[str]:
+) -> list[list[str]]:
     '''
     [Claim] + [headers] + [cell value]
     for cell with multi row/col span, [headers] are defined for their first 
@@ -60,6 +60,7 @@ def preprocess_cell(
     cell_strings = []
     rendering_table = render_table(table_content)
     for i in range(len(table_content)):
+        cell_strings_in_row = []
         col_index_cursor = 0
         row_headers = [table_content[i][0]['value']]
         if len(table_content[i]) >= 2:
@@ -70,5 +71,6 @@ def preprocess_cell(
                 col_headers.append(rendering_table[1][col_index_cursor])
             col_index_cursor += table_content[i][j]['column_span']
             cell_str = claim + '[SEP]' + "_".join(row_headers+col_headers+[table_content[i][j]['value']])
-            cell_strings.append(cell_str)         
+            cell_strings_in_row.append(cell_str)
+        cell_strings.append(cell_strings_in_row)
     return cell_strings

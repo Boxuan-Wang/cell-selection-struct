@@ -1,4 +1,5 @@
 from ..classifiers.scoreClassifier import ScoreClassifier
+from ..classifiers.cellClassifier import CellClassifier
 from ..textGenerater.TtTGeneration import TextGenerater
 from ..wikiDatabase.wikiConnection import WIKI_connection
 # from wikiTable.table import Table
