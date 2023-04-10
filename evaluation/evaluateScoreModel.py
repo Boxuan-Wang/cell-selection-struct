@@ -8,12 +8,14 @@ from ..feverous_utils import parseEvidence
 import six
 import json
 import argparse
+import tqdm
 
 
 def evaluate_score_model(
     test_data_path:str,
     store_path:str,
     score_classifier:ScoreClassifier,
+    cell_classifier:CellClassifier,
     text_generater:TextGenerater,
     db_connection:WIKI_connection,
     max_accept_table_size:int = 400,
@@ -22,7 +24,7 @@ def evaluate_score_model(
       
     with open(store_path, "w") as output_file:
         with open(test_data_path, "r",encoding="utf-8") as test_data_file:
-            for i,line in enumerate(test_data_file):
+            for i,line in tqdm(enumerate(test_data_file)):
                 if pretesting and i > 5:
                     # end loop if in pretest mode
                     break
@@ -55,21 +57,36 @@ def evaluate_score_model(
                     
                     table_dict = {"table":table_content, "page_title":title, "section_title": title}
                     
-                    marked_table = score_classifier.classify_cells(claim, table_content)
-                    selected_cells = marked_table.get_marked_cell_ids()
+                    # inference on row/col model
+                    marked_table_rowcol = score_classifier.classify_cells(claim, table_content)
+                    selected_cells_rowcol = marked_table_rowcol.get_marked_cell_ids()
                     
-                    # generate a evidence for each row
-                    evidence_sentences_by_row = text_generater.generate_grouped_by_row(table_dict,selected_cells)
-                    evidence_sentence_all_in_one = text_generater.convert(table_dict,selected_cells)
+                    # inference on cell model
+                    marked_table_cell = cell_classifier.classify_cells(claim, table_content)
+                    selected_cells_cell = marked_table_cell.get_marked_cell_ids()
+                    
+                    # generate a evidence for each row (row/col model)
+                    evidence_sentences_by_row = text_generater.generate_grouped_by_row(table_dict,selected_cells_rowcol)
+                    evidence_sentence_all_in_one = text_generater.convert(table_dict,selected_cells_rowcol)
+                    
+                    #generate evidence for cell model
+                    evidence_by_row_cell_model = text_generater.generate_grouped_by_row(table_dict,selected_cells_cell)
+                    evidence_all_in_one_cell_model = text_generater.convert(table_dict,selected_cells_cell)
                     
                     result_dict = {'claim': claim }
                     result_dict['id'] = json_example['id']
-                    result_dict['evidence_sentences_by_row'] = evidence_sentences_by_row
-                    result_dict['evidence_sentence_single'] = evidence_sentence_all_in_one
-                    result_dict['selected_cells'] = selected_cells
-                    result_dict['table_title'] = title
                     result_dict['table_id'] = table_id
+                    result_dict['table_title'] = title
                     result_dict['annotated_cells'] = relevant_ids
+                    
+                    result_dict['selected_cells_rowcol'] = selected_cells_rowcol
+                    result_dict['evidence_sentences_by_row_rowcol'] = evidence_sentences_by_row
+                    result_dict['evidence_sentence_single_rowcol'] = evidence_sentence_all_in_one
+                    
+                    result_dict['selected_cells_cell'] = selected_cells_cell
+                    result_dict['evidence_sentences_by_row_cell'] = evidence_by_row_cell_model
+                    result_dict['evidence_sentence_single_cell'] = evidence_all_in_one_cell_model
+                    
                     
                     output_file.write(json.dumps(result_dict,ensure_ascii=False) + "\n")
     print("Finish evaluation.")
