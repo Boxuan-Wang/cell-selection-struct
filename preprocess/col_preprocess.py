@@ -117,30 +117,6 @@ def preprocess_col(dataset_path:str, save_path:str, db_connection: WIKI_connecti
       claim = data_row.claim
       evidence = data_row.evidence
       for table_id in evidence.keys():
-        # (title,ind_table) = table_id
-        # # query WIKI database to get table content
-        # table_content = db_connection.query_wiki_table(title,ind_table)
-        # # find relevant rows
-        # relevant_cells = evidence[table_id]
-        # relevant_cols = set()
-        # for relevant_cell in relevant_cells:
-        #   col_id = int(relevant_cell.split('_')[-1])
-        #   row_id = int(relevant_cell.split('_')[-2])
-        #   # this is needed because in  table representation in wiki database
-        #   # a cell may have multi column span
-        #   # and will make the col_id a chaos
-        #   row_of_the_cell = table_content[row_id]
-        #   col_render_id = 0
-        #   for i in range(col_id-1):
-        #     col_render_id += row_of_the_cell[i]['column_span']
-        #   relevant_cols.add(col_render_id)
-        # print(relevant_cols)
-        # processed_strings = parse_col(table_content)
-        # for i,processed_string in enumerate(processed_strings):
-        #   relevant = i in relevant_cols
-        #   combined_str = claim + '[SEP]' + processed_string
-        #   csv_row = [combined_str,relevant]
-        #   # print(csv_row)
         relevant_cells = evidence[table_id]
         csv_rows = preprocess_col_single_table(table_id,relevant_cells,claim,db_connection)
         for csv_row in csv_rows:

@@ -18,42 +18,39 @@ class CellClassifier():
       minimum_score:float = 0.05
     ):
       self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-    #   self.row_model = ColRowClassifier.load_from_checkpoint(row_model_path)
-    #   self.row_model.eval()
-    #   self.col_model = ColRowClassifier.load_from_checkpoint(col_model_path)
-    #   self.col_model.eval()
-      self.cell_model = 
+      self.cell_model = ColRowClassifier.load_from_checkpoint(cell_model_path)
+      self.cell_model.eval()
       self.wiki_db = db_connection
       self.num_limit = relevant_num_limit
       self.min_score = minimum_score
       print("Score model loaded.")
     
-    def score_rows_in_table(
-      self, 
-      claim:str,
-      table_content:list[list[dict]]
-    ) -> list[float]:
-      ret = []
-      row_strings = preprocess_row(claim,table_content)
-      for i,text in enumerate(row_strings):
-        tok = ColRowClassifier.tokenize(text, self.tokenizer)
-        result = self.row_model.predict(tok)
-        ret.append(result)
-        ret.append(result)
-      return ret
+    # def score_rows_in_table(
+    #   self, 
+    #   claim:str,
+    #   table_content:list[list[dict]]
+    # ) -> list[float]:
+    #   ret = []
+    #   row_strings = preprocess_row(claim,table_content)
+    #   for i,text in enumerate(row_strings):
+    #     tok = ColRowClassifier.tokenize(text, self.tokenizer)
+    #     result = self.row_model.predict(tok)
+    #     ret.append(result)
+    #     ret.append(result)
+    #   return ret
     
-    def score_cols_in_table(
-      self,
-      claim:str,
-      table_content:list[list[dict]]
-    ) -> list[float]:
-      ret = []
-      col_strings = preprocess_col(claim,table_content)
-      for i,text in enumerate(col_strings):
-        tok = ColRowClassifier.tokenize(text, self.tokenizer)
-        result = self.col_model.predict(tok)
-        ret.append(result)
-      return ret
+    # def score_cols_in_table(
+    #   self,
+    #   claim:str,
+    #   table_content:list[list[dict]]
+    # ) -> list[float]:
+    #   ret = []
+    #   col_strings = preprocess_col(claim,table_content)
+    #   for i,text in enumerate(col_strings):
+    #     tok = ColRowClassifier.tokenize(text, self.tokenizer)
+    #     result = self.col_model.predict(tok)
+    #     ret.append(result)
+    #   return ret
     
     def classify_cells(
       self,

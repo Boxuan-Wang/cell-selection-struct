@@ -5,7 +5,7 @@ from ..models.rowcolModel import ColRowClassifier
 import math
 import numpy as np
 from ..wikiTable.table import Table
-from ..wikiTable.untils import preprocess_col,preprocess_row
+from ..wikiTable.utils import preprocess_col,preprocess_row
 
 
 
@@ -60,8 +60,8 @@ class ScoreClassifier():
       claim:str,
       table_content:list[list[dict]]
     ) -> Table:
-      row_result = self.classify_table_by_row(claim,table_content)
-      col_result = self.classify_table_by_col(claim,table_content)
+      row_result = self.score_rows_in_table(claim,table_content)
+      col_result = self.score_cols_in_table(claim,table_content)
       cell_scores = np.outer(row_result,col_result).tolist()
       
       ret_table = Table(table_content)
