@@ -6,6 +6,7 @@ from ..wikiDatabase.wikiConnection import WIKI_connection
 from ..feverous_utils import parseEvidence
 # from tqdm import tqdm
 import six
+import pandas as pd
 import json
 import argparse
 from tqdm import tqdm
@@ -22,74 +23,83 @@ def evaluate_score_model(
     pretesting:bool=False
 ) -> None:
       
+    dataframe = pd.read_json(test_data_path,
+                    orient='records',
+                    lines=True,
+                    dtype={'id':int,'claim':str,'label':str,'evidence':str,'annotator_operation':json,'challenge':str})
+    dataframe.dropna()
+    dataframe = dataframe[['id','claim','label','evidence']]
+    dataframe['evidence'] = dataframe['evidence'].astype('str')
+    dataframe = dataframe[(dataframe['label']=='REFUTES')|(dataframe['label']=='SUPPORTS')|(dataframe['label']=='NOT ENOUGH INFO')]
+    
     with open(store_path, "w") as output_file:
-        with open(test_data_path, "r",encoding="utf-8") as test_data_file:
-            for i,line in tqdm(enumerate(test_data_file)):
-                print(line)
-                if pretesting and i > 50:
-                    # end loop if in pretest mode
+        # with open(test_data_path, "r",encoding="utf-8") as test_data_file:
+        for i,line in tqdm(enumerate(dataframe)):
+            print(line)
+            if pretesting and i > 50:
+                # end loop if in pretest mode
+                break
+            # line = six.ensure_text(line, "utf-8")
+            # json_example = json.loads(line)
+            claim = line['claim']
+            if claim == "":
+                # skip empty line
+                continue            
+            evidence = line['evidence']
+            evidence_dict = parseEvidence(evidence)
+            if len(evidence_dict.keys())==0:
+                # ignore claim with tabular evidence
+                continue
+            for table_key in evidence_dict.keys():
+                print(table_key)
+                # handle annotation data
+                relevants = evidence_dict[table_key]
+                relevant_ids = []
+                for relevant_cell in relevants:
+                    row = int(relevant_cell.split('_')[-2])
+                    col = int(relevant_cell.split('_')[-1])
+                    relevant_ids.append([row,col])
+                
+                (title,table_id) = table_key
+                table_content = db_connection.query_wiki_table(title, table_id)
+                if sum(len(x) for x in table_content) > max_accept_table_size:
+                    # skip large tables for time/memory saving
                     break
-                line = six.ensure_text(line, "utf-8")
-                json_example = json.loads(line)
-                claim = json_example['claim']
-                if claim == "":
-                    # skip empty line
-                    continue            
-                evidence = json_example['evidence']
-                evidence_dict = parseEvidence(evidence)
-                if len(evidence_dict.keys())==0:
-                    # ignore claim with tabular evidence
-                    continue
-                for table_key in evidence_dict.keys():
-                    print(table_key)
-                    # handle annotation data
-                    relevants = evidence_dict[table_key]
-                    relevant_ids = []
-                    for relevant_cell in relevants:
-                        row = int(relevant_cell.split('_')[-2])
-                        col = int(relevant_cell.split('_')[-1])
-                        relevant_ids.append([row,col])
-                    
-                    (title,table_id) = table_key
-                    table_content = db_connection.query_wiki_table(title, table_id)
-                    if sum(len(x) for x in table_content) > max_accept_table_size:
-                        # skip large tables for time/memory saving
-                        break
-                    
-                    table_dict = {"table":table_content, "page_title":title, "section_title": title}
-                    
-                    # inference on row/col model
-                    marked_table_rowcol = score_classifier.classify_cells(claim, table_content)
-                    selected_cells_rowcol = marked_table_rowcol.get_marked_cell_ids()
-                    
-                    # inference on cell model
-                    marked_table_cell = cell_classifier.classify_cells(claim, table_content)
-                    selected_cells_cell = marked_table_cell.get_marked_cell_ids()
-                    
-                    # generate a evidence for each row (row/col model)
-                    evidence_sentences_by_row = text_generater.generate_grouped_by_row(table_dict,selected_cells_rowcol)
-                    evidence_sentence_all_in_one = text_generater.convert(table_dict,selected_cells_rowcol)
-                    
-                    #generate evidence for cell model
-                    evidence_by_row_cell_model = text_generater.generate_grouped_by_row(table_dict,selected_cells_cell)
-                    evidence_all_in_one_cell_model = text_generater.convert(table_dict,selected_cells_cell)
-                    
-                    result_dict = {'claim': claim }
-                    result_dict['id'] = json_example['id']
-                    result_dict['table_id'] = table_id
-                    result_dict['table_title'] = title
-                    result_dict['annotated_cells'] = relevant_ids
-                    
-                    result_dict['selected_cells_rowcol'] = selected_cells_rowcol
-                    result_dict['evidence_sentences_by_row_rowcol'] = evidence_sentences_by_row
-                    result_dict['evidence_sentence_single_rowcol'] = evidence_sentence_all_in_one
-                    
-                    result_dict['selected_cells_cell'] = selected_cells_cell
-                    result_dict['evidence_sentences_by_row_cell'] = evidence_by_row_cell_model
-                    result_dict['evidence_sentence_single_cell'] = evidence_all_in_one_cell_model
-                    
-                    
-                    output_file.write(json.dumps(result_dict,ensure_ascii=False) + "\n")
+                
+                table_dict = {"table":table_content, "page_title":title, "section_title": title}
+                
+                # inference on row/col model
+                marked_table_rowcol = score_classifier.classify_cells(claim, table_content)
+                selected_cells_rowcol = marked_table_rowcol.get_marked_cell_ids()
+                
+                # inference on cell model
+                marked_table_cell = cell_classifier.classify_cells(claim, table_content)
+                selected_cells_cell = marked_table_cell.get_marked_cell_ids()
+                
+                # generate a evidence for each row (row/col model)
+                evidence_sentences_by_row = text_generater.generate_grouped_by_row(table_dict,selected_cells_rowcol)
+                evidence_sentence_all_in_one = text_generater.convert(table_dict,selected_cells_rowcol)
+                
+                #generate evidence for cell model
+                evidence_by_row_cell_model = text_generater.generate_grouped_by_row(table_dict,selected_cells_cell)
+                evidence_all_in_one_cell_model = text_generater.convert(table_dict,selected_cells_cell)
+                
+                result_dict = {'claim': claim }
+                result_dict['id'] = line['id']
+                result_dict['table_id'] = table_id
+                result_dict['table_title'] = title
+                result_dict['annotated_cells'] = relevant_ids
+                
+                result_dict['selected_cells_rowcol'] = selected_cells_rowcol
+                result_dict['evidence_sentences_by_row_rowcol'] = evidence_sentences_by_row
+                result_dict['evidence_sentence_single_rowcol'] = evidence_sentence_all_in_one
+                
+                result_dict['selected_cells_cell'] = selected_cells_cell
+                result_dict['evidence_sentences_by_row_cell'] = evidence_by_row_cell_model
+                result_dict['evidence_sentence_single_cell'] = evidence_all_in_one_cell_model
+                
+                
+                output_file.write(json.dumps(result_dict,ensure_ascii=False) + "\n")
     print("Finish evaluation.")
                                  
 # if __name__ == "__main__":
