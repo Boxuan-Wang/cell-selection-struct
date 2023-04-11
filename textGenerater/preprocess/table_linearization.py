@@ -1,4 +1,4 @@
-from textGenerater.preprocess.preprocess_utils import get_highlighted_subtable
+from .preprocess_utils import get_highlighted_subtable
 
 
 def linearize_table_with_index(table, cell_indices, table_page_title, table_section_title, order_cell=False):

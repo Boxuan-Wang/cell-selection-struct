@@ -25,7 +25,7 @@ from absl import app
 from absl import flags
 import six
 
-from textGenerater.preprocess.table_linearization import linearize_table_with_index
+from .table_linearization import linearize_table_with_index
 
 flags.DEFINE_string("input_path", None, "Input json file.")
 
