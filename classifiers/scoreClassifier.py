@@ -47,7 +47,6 @@ class ScoreClassifier():
         with torch.no_grad():
           result = self.row_model.predict(tok)
         ret.append(result)
-        ret.append(result)
       return ret
     
     def score_cols_in_table(
