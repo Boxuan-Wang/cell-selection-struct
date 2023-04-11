@@ -1,7 +1,7 @@
 import queue
 from typing import List, Tuple
 from datetime import datetime
-from wikiTable.cell import Cell
+from cell import Cell
 
 
 class Table: 
