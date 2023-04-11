@@ -58,7 +58,7 @@ class ScoreClassifier():
       ret = []
       col_strings = preprocess_col(claim,table_content)
       for i,text in enumerate(col_strings):
-        tok = ColRowClassifier.tokenize(text, self.tokenizer)
+        tok = tokenize(text, self.tokenizer)
         if self.device is not None:
           tok.to(self.device)
         with torch.no_grad():
