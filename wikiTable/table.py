@@ -150,7 +150,7 @@ class Table:
 
 
   def gen_scores_strings(self, scores):
-    ret_string = '\n'.join(['    '.join(["{:.3f}".format(x) for x in line]) for line in scores])
+    ret_string = '<\div><div>'.join(['    '.join(["{:.3f}".format(x) for x in line]) for line in scores])
     return ret_string
     
   def generate_HTML(self) -> str:
