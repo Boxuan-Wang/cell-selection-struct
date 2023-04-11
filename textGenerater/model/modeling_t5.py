@@ -44,8 +44,8 @@ from transformers.utils import logging
 from transformers.utils.model_parallel_utils import assert_device_map, get_device_map
 from transformers.models.t5.configuration_t5 import T5Config
 
-from textGenerater.model.structural_attention import rewrite_encoder_attention_mask
-from textGenerater.model.invariant_position import compute_invariant_position
+from .structural_attention import rewrite_encoder_attention_mask
+from .invariant_position import compute_invariant_position
 
 logger = logging.get_logger(__name__)
 
