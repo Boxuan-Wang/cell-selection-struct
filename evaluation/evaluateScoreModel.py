@@ -25,7 +25,7 @@ def evaluate_score_model(
     with open(store_path, "w") as output_file:
         with open(test_data_path, "r",encoding="utf-8") as test_data_file:
             for i,line in tqdm(enumerate(test_data_file)):
-                if pretesting and i > 5:
+                if pretesting and i > 50:
                     # end loop if in pretest mode
                     break
                 line = six.ensure_text(line, "utf-8")
@@ -35,7 +35,6 @@ def evaluate_score_model(
                     # skip empty line
                     continue            
                 evidence = json_example['evidence']
-                # todo: put parseEvidence somewhere in a util file
                 evidence_dict = parseEvidence(evidence)
                 if len(evidence_dict.keys())==0:
                     # ignore claim with tabular evidence
