@@ -12,19 +12,19 @@ def render_table(table_content:list[list[dict]]):
         col_to_write = 0
         for j in range(len(wiki_table_row)):
             cell = wiki_table_row[j]
-        while rendering_table[i][col_to_write] is not None:
-            # taken by previous line
-            # go to the next cell
-            col_to_write += 1
-        assert col_to_write < width
-        # write to rendering_table
-        try:
-            for i_write in range(int(cell['row_span'])):
-                for j_write in range(int(cell['column_span'])):
-                    if col_to_write +j_write < width:
-                        rendering_table[i+i_write][col_to_write+j_write] = cell['value']
-        except IndexError:
-            continue
+            while rendering_table[i][col_to_write] is not None:
+                # taken by previous line
+                # go to the next cell
+                col_to_write += 1
+            assert col_to_write < width
+            # write to rendering_table
+            try:
+                for i_write in range(int(cell['row_span'])):
+                    for j_write in range(int(cell['column_span'])):
+                        if col_to_write +j_write < width:
+                            rendering_table[i+i_write][col_to_write+j_write] = cell['value']
+            except IndexError:
+                continue
         
     return rendering_table
 
