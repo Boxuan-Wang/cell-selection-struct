@@ -1,7 +1,7 @@
 import torch
 import lightning.pytorch as pl
 from transformers import BertTokenizer
-from ..models.rowcolModel import ColRowClassifier
+from ..models.rowcolModel import ColRowClassifier, tokenize
 import math
 import numpy as np
 from ..wikiTable.table import Table
@@ -36,7 +36,7 @@ class ScoreClassifier():
       ret = []
       row_strings = preprocess_row(claim,table_content)
       for i,text in enumerate(row_strings):
-        tok = ColRowClassifier.tokenize(text, self.tokenizer)
+        tok = tokenize(text, self.tokenizer)
         result = self.row_model.predict(tok)
         ret.append(result)
         ret.append(result)

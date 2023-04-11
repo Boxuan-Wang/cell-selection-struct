@@ -1,7 +1,7 @@
 import torch
 import lightning.pytorch as pl
 from transformers import BertTokenizer
-from ..models.rowcolModel import ColRowClassifier
+from ..models.rowcolModel import ColRowClassifier, tokenize
 import math
 import numpy as np
 from ..wikiTable.table import Table
@@ -36,7 +36,7 @@ class CellClassifier():
         result_row = []
         for j in range(len(cell_strings[i])):
           text = cell_strings[i][j]
-          tok = ColRowClassifier.tokenize(text, self.tokenizer)
+          tok = tokenize(text, self.tokenizer)
           score = self.cell_model.predict(tok)
           result_row.append(score)
         result.append(result_row)
