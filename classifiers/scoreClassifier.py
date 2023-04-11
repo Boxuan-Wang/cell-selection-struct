@@ -44,7 +44,8 @@ class ScoreClassifier():
         tok = tokenize(text, self.tokenizer)
         if self.device is not None:
           tok.to(self.device)
-        result = self.row_model.predict(tok)
+        with torch.no_grad():
+          result = self.row_model.predict(tok)
         ret.append(result)
         ret.append(result)
       return ret
@@ -60,7 +61,8 @@ class ScoreClassifier():
         tok = ColRowClassifier.tokenize(text, self.tokenizer)
         if self.device is not None:
           tok.to(self.device)
-        result = self.col_model.predict(tok)
+        with torch.no_grad():
+          result = self.col_model.predict(tok)
         ret.append(result)
       return ret
     

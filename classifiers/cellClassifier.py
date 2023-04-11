@@ -44,7 +44,8 @@ class CellClassifier():
           tok = tokenize(text, self.tokenizer)
           if self.device is not None:
             tok.to(self.device)
-          score = self.cell_model.predict(tok)
+          with torch.no_grad():
+            score = self.cell_model.predict(tok)
           result_row.append(score)
         result.append(result_row)
       

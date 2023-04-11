@@ -50,7 +50,7 @@ class ColRowClassifier(pl.LightningModule):
   
   def predict(self, x):
     logits = self.forward(x)
-    return self.softmax(logits).cpu().detach().numpy()[0][0]
+    return self.softmax(logits).cpu().numpy()[0][0]
  
 def tokenize(text:str, tokenizer:BertTokenizer) -> Tensor:
   return tokenizer(
