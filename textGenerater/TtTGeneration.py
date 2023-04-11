@@ -77,7 +77,6 @@ class TextGenerater:
         table_section_title = table["section_title"]
 
         model_inputs = self.__preprocess_function__(table_content,table_page_title,table_section_title,highlighted_cells)
-        # print("Model inputs: ", model_inputs)
         model_outputs = self.lattice_model.generate(
             model_inputs.input_ids,
             attention_mask=model_inputs["attention_mask"],
@@ -85,7 +84,6 @@ class TextGenerater:
             num_beams = 4)
 
         result_str = ""
-        print("Model output",(model_outputs))
         for i in range(len(model_outputs)):
             segment_result = self.lattice_tokenizer.decode(model_outputs[i], skip_special_tokens=True)
 

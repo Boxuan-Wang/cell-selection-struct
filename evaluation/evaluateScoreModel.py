@@ -40,8 +40,6 @@ def evaluate_score_model(
             if pretesting and i > 50:
                 # end loop if in pretest mode
                 break
-            # line = six.ensure_text(line, "utf-8")
-            # json_example = json.loads(line)
             claim = line.claim
             if claim == "":
                 # skip empty line
