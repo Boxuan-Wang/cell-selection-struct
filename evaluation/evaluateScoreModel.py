@@ -36,21 +36,20 @@ def evaluate_score_model(
         # with open(test_data_path, "r",encoding="utf-8") as test_data_file:
         for i in tqdm(range(len(dataframe))):
             line = dataframe.iloc[i]
-            print(line)
             if pretesting and i > 50:
                 # end loop if in pretest mode
                 break
             claim = line.claim
             if claim == "":
                 # skip empty line
-                continue            
+                continue    
+            print('Processing: ' + claim)        
             evidence = line.evidence
             evidence_dict = parseEvidence(evidence)
             if len(evidence_dict.keys())==0:
                 # ignore claim with tabular evidence
                 continue
             for table_key in evidence_dict.keys():
-                print(table_key)
                 # handle annotation data
                 relevants = evidence_dict[table_key]
                 relevant_ids = []
