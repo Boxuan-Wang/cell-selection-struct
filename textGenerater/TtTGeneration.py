@@ -24,6 +24,8 @@ class TextGenerater:
             for cell in cell_row:
 
                 cell['value'] = sanitise_link_format(cell['value'])
+                cell['row_span'] = int(cell['row_span'])
+                cell['column_span'] = int(cell['column_span'])
 
         return table_content
     
