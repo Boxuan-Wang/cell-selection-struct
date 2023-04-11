@@ -40,6 +40,7 @@ def evaluate_score_model(
                     # ignore claim with tabular evidence
                     continue
                 for table_key in evidence_dict.keys():
+                    print(table_key)
                     # handle annotation data
                     relevants = evidence_dict[table_key]
                     relevant_ids = []
