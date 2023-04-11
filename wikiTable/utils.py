@@ -34,7 +34,7 @@ def preprocess_row(
     ) -> list[str]:
         rendering_table = render_table(table_content)
         row_strings = ['_'.join(row) for row in rendering_table]
-        row_strings = [claim + "[SEP]" + s for s in row_strings]
+        row_strings = [(claim + "[SEP]" + s) for s in row_strings]
         return row_strings
     
 def preprocess_col(
@@ -44,7 +44,7 @@ def preprocess_col(
     rendering_table = render_table(table_content)
     rendering_table = list(zip(*rendering_table))
     col_strings = ['_'.join(row) for row in rendering_table]
-    col_strings = [claim + "[SEP]" + s for s in col_strings]
+    col_strings = [(claim + "[SEP]" + s) for s in col_strings]
     return col_strings
 
 def preprocess_cell(
