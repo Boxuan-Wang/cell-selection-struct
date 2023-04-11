@@ -10,6 +10,7 @@ from ..feverous_utils import sanitise_link_format
 class TextGenerater:
     def __init__(self, model_path):
         # lattice_config = AutoConfig.from_pretrained("t5_small")
+        self.lattice_model = T5ForConditionalGeneration.from_pretrained("t5-small")
         self.lattice_tokenizer = CustomT5TokenizerFast.from_pretrained("t5-small",use_fast=True)
         self.lattice_model.load_state_dict(torch.load(model_path,map_location = torch.device('cuda')))
         self.lattice_model.eval()
