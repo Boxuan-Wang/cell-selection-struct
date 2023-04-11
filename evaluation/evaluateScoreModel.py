@@ -25,6 +25,7 @@ def evaluate_score_model(
     with open(store_path, "w") as output_file:
         with open(test_data_path, "r",encoding="utf-8") as test_data_file:
             for i,line in tqdm(enumerate(test_data_file)):
+                print(line)
                 if pretesting and i > 50:
                     # end loop if in pretest mode
                     break
