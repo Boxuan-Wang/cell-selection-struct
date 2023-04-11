@@ -16,13 +16,18 @@ class ScoreClassifier():
       col_model_path,
       db_connection,
       relevant_num_limit:int = 10,
-      minimum_score:float = 0.05
+      minimum_score:float = 0.05,
+      device:str = None
     ):
+      self.device = device
       self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
       self.row_model = ColRowClassifier.load_from_checkpoint(row_model_path)
       self.row_model.eval()
       self.col_model = ColRowClassifier.load_from_checkpoint(col_model_path)
       self.col_model.eval()
+      if self.device is not None:
+        self.col_model.to(self.device)
+        self.row_model.to(self.device)
       self.wiki_db = db_connection
       self.num_limit = relevant_num_limit
       self.min_score = minimum_score
@@ -37,6 +42,8 @@ class ScoreClassifier():
       row_strings = preprocess_row(claim,table_content)
       for i,text in enumerate(row_strings):
         tok = tokenize(text, self.tokenizer)
+        if self.device is not None:
+          tok.to(self.device)
         result = self.row_model.predict(tok)
         ret.append(result)
         ret.append(result)
@@ -51,6 +58,8 @@ class ScoreClassifier():
       col_strings = preprocess_col(claim,table_content)
       for i,text in enumerate(col_strings):
         tok = ColRowClassifier.tokenize(text, self.tokenizer)
+        if self.device is not None:
+          tok.to(self.device)
         result = self.col_model.predict(tok)
         ret.append(result)
       return ret
