@@ -8,7 +8,7 @@ from ..feverous_utils import parseEvidence
 import six
 import json
 import argparse
-import tqdm
+from tqdm import tqdm
 
 
 def evaluate_score_model(
