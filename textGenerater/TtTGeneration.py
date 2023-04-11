@@ -1,7 +1,7 @@
 import torch
 from transformers import AutoConfig
-from model.tokenizer import CustomT5TokenizerFast
-from model.modeling_t5 import T5ForConditionalGeneration
+from .model.tokenizer import CustomT5TokenizerFast
+from .model.modeling_t5 import T5ForConditionalGeneration
 from preprocess.table_linearization import linearize_table_with_index
 from ..wikiDatabase.wikiConnection import WIKI_connection
 from ..feverous_utils import sanitise_link_format
