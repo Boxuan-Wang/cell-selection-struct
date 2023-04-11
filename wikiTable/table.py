@@ -19,6 +19,9 @@ class Table:
         new_row.append(new_cell)
       self.cell_table.append(new_row)
     
+    # record the assigned scores of the cells, can be cell format or row/col format
+    self.assigned_scores = None
+    
     # The following code creates a rendering table, corresponding to how the table looks like
     # find the width and height of table
     width = 0
@@ -94,6 +97,7 @@ class Table:
           cell.mark_col()
 
   def mark_cells_by_score(self, scores:List[List[int]], num_limit:int, min_score:float):
+    self.assigned_scores = scores
     marked_cell_num = 0
     score_queue = queue.PriorityQueue()
     for i in range(len(scores)):
@@ -118,6 +122,7 @@ class Table:
   The version for cell classification. Here, scores are in the unit of cells (not in span), i.e. different rows may have different lengths
   '''
   def mark_cells_by_score_cell_version(self, scores:List[List[int]], num_limit:int, min_score:float):
+    self.assigned_scores = scores
     marked_cell_num = 0
     score_queue = queue.PriorityQueue()
     for i in range(len(scores)):
@@ -144,6 +149,10 @@ class Table:
           marked_cell_num += 1
 
 
+  def gen_scores_strings(self, scores):
+    ret_string = '\n'.join([' '.join([str(x) for x in line]) for line in scores])
+    return ret_string
+    
   def generate_HTML(self) -> str:
     ret = "<table border = \"1px solid\">"
     for table_row in self.cell_table:
@@ -151,6 +160,10 @@ class Table:
       for table_cell in table_row:
         ret += table_cell.generate_HTML()
     ret += "</table>"
+    if self.assigned_scores is not None:
+      ret += "<div>"
+      ret += self.gen_scores_strings(self.assigned_scores)
+      ret  += "</div>"
     return ret
   
   def compare_annonation(self, annonatated_cells:List[str]) -> Tuple[int,int,int,int]:
