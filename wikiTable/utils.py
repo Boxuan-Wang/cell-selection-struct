@@ -69,7 +69,7 @@ def preprocess_cell(
             col_headers = [rendering_table[0][col_index_cursor]]
             if len(rendering_table) > 1:
                 col_headers.append(rendering_table[1][col_index_cursor])
-            col_index_cursor += table_content[i][j]['column_span']
+            col_index_cursor += int(table_content[i][j]['column_span'])
             cell_str = claim + '[SEP]' + "_".join(row_headers+col_headers+[table_content[i][j]['value']])
             cell_strings_in_row.append(cell_str)
         cell_strings.append(cell_strings_in_row)
