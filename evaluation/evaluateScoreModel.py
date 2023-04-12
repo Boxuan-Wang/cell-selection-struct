@@ -10,6 +10,7 @@ import pandas as pd
 import json
 import argparse
 from tqdm import tqdm
+import time
 
 
 def evaluate_score_model(
@@ -67,11 +68,17 @@ def evaluate_score_model(
                 table_dict = {"table":table_content, "page_title":title, "section_title": title}
                 
                 # inference on row/col model
+                start_time = time.time()
                 marked_table_rowcol = score_classifier.classify_cells(claim, table_content)
+                end_time = time.time()
+                rowcol_time = end_time - start_time
                 selected_cells_rowcol = marked_table_rowcol.get_marked_cell_ids()
                 
                 # inference on cell model
+                start_time = time.time()
                 marked_table_cell = cell_classifier.classify_cells(claim, table_content)
+                end_time = time.time()
+                cell_time = end_time - start_time
                 selected_cells_cell = marked_table_cell.get_marked_cell_ids()
                 
                 # generate a evidence for each row (row/col model)
@@ -92,10 +99,12 @@ def evaluate_score_model(
                 result_dict['selected_cells_rowcol'] = selected_cells_rowcol
                 result_dict['evidence_sentences_by_row_rowcol'] = evidence_sentences_by_row
                 result_dict['evidence_sentence_single_rowcol'] = evidence_sentence_all_in_one
+                result_dict['rowcol_time'] = rowcol_time
                 
                 result_dict['selected_cells_cell'] = selected_cells_cell
                 result_dict['evidence_sentences_by_row_cell'] = evidence_by_row_cell_model
                 result_dict['evidence_sentence_single_cell'] = evidence_all_in_one_cell_model
+                result_dict['cell_time'] = cell_time
                 
                 
                 output_file.write(json.dumps(result_dict,ensure_ascii=False) + "\n")
