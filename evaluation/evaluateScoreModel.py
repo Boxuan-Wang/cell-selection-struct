@@ -43,7 +43,6 @@ def evaluate_score_model(
             if claim == "":
                 # skip empty line
                 continue    
-            print('Processing: ' + claim)        
             evidence = line.evidence
             label = line.label
             evidence_dict = parseEvidence(evidence)
