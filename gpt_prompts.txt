@@ -1,0 +1,19 @@
+Verdict prediction and justification production for sentence evidence prompt:
+
+You are a helpful assistant. 
+Your task is to infer the truthfulness of the [claim] with given [evidence]. Some of the evidence given may be irrelevant. 
+First, say SUPPORT, REFUTE or Not Enough Information, and then briefly justify your verdict. 
+
+Claim：.......
+Evidence: .......
+
+T = 0.7, Max length = 256, top 1, no penalty
+--------------------------------------------------------------------------------------------------------------------------
+
+Verdict prediction and justification production for linearized cell evidence prompt:
+
+You are a helpful assistant. 
+Your task is to infer the truthfulness of the [claim] with given [evidence]. Some of the evidence given may be irrelevant. 
+Each line of evidence is in the format of a cell in a table, followed by its headers. First, say SUPPORT, REFUTE or Not Enough Information, and then briefly justify your verdict. 
+
+T = 0.7, Max length = 256, top 1, no penalty

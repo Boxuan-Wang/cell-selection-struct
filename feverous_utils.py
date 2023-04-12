@@ -78,7 +78,37 @@ def sanitise_link_format(text:str) -> str:
     link_mid = text.find('|', link_loc, link_end)
     if link_end==-1 or link_mid==-1:
         # this is a not expected case, break to avoid dead loop
-        break
+        return text
     text = text[:link_loc] + text[link_mid+1 : link_end] + text[link_end+2:]
   
   return text
+
+# return the evidence set that uses sentence evidence only
+# return: list[list[str]], sets of sentence evidence (each list[str] is a set of evidence)
+def parseSentenceEvidenceOnly(evidenceStr:str) -> list[list[str]]:
+  evidence_list = parseEvidenceList(evidenceStr)
+  ret = []
+  for string in evidence_list:
+    ori_string = string
+    try:
+      evidence = ast.literal_eval(string.strip())
+    except JSONDecodeError:
+      print(f"ERROR!When parsing evidence: {string}")
+      print(ori_string)
+      
+    evidence_id = evidence['content']
+    
+    pure_sentence = True
+    evidence_set = []
+    for item in evidence_id:
+      l = item.split('_')
+      if l[-2]!= 'sentence':
+        pure_sentence = False
+        break
+      evidence_set.append(item)
+  if pure_sentence:
+    ret.append(evidence_set)
+  return ret
+      
+        
+      
