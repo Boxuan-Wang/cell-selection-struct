@@ -45,6 +45,7 @@ def evaluate_score_model(
                 continue    
             print('Processing: ' + claim)        
             evidence = line.evidence
+            label = line.label
             evidence_dict = parseEvidence(evidence)
             if len(evidence_dict.keys())==0:
                 # ignore claim with tabular evidence
@@ -87,6 +88,7 @@ def evaluate_score_model(
                 result_dict['table_id'] = table_id
                 result_dict['table_title'] = title
                 result_dict['annotated_cells'] = relevant_ids
+                result_dict['label'] = label
                 
                 result_dict['selected_cells_rowcol'] = selected_cells_rowcol
                 result_dict['evidence_sentences_by_row_rowcol'] = evidence_sentences_by_row
