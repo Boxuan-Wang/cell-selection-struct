@@ -48,3 +48,14 @@ class WIKI_connection():
     cell_content = table_content[row_id][col_id]
     cell_value = cell_content['value']
     return cell_value
+  
+  def queryWikiSentence(self, sentence_id):
+    l = sentence_id.split('_')
+    title = l[0]
+    ind = 'sentence_'+str(l[-1])
+    cur = self.connection.cursor()
+    res = cur.execute("SELECT data from wiki where id = " + "\"" + title + "\"")
+    page = (res.fetchall())[0][0]
+    page = json.loads(page)
+    return page[ind]
+    
