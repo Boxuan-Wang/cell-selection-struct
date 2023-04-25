@@ -3,7 +3,7 @@ from ..classifiers.cellClassifier import CellClassifier
 from ..textGenerater.TtTGeneration import TextGenerater
 from ..wikiDatabase.wikiConnection import WIKI_connection
 # from wikiTable.table import Table
-from ..feverous_utils import parseEvidence, parseSentenceEvidenceOnly
+from ..feverous_utils import parseEvidence, parseSentenceEvidenceOnly, parseAllSentenceEvidence
 # from tqdm import tqdm
 import six
 import pandas as pd
@@ -47,8 +47,8 @@ def evaluate_score_model(
             evidence = line.evidence
             label = line.label
             evidence_dict = parseEvidence(evidence)
-            evidence_sentences = parseSentenceEvidenceOnly(evidence)
-            evidence_sentences = [item for sublist in evidence_sentences for item in sublist]
+            evidence_sentences = parseAllSentenceEvidence(evidence)
+            # evidence_sentences = [item for sublist in evidence_sentences for item in sublist]
             if len(evidence_dict.keys())==0:
                 # ignore claim with tabular evidence
                 continue

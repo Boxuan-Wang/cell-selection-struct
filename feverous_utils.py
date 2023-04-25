@@ -110,5 +110,23 @@ def parseSentenceEvidenceOnly(evidenceStr:str) -> list[list[str]]:
     ret.append(evidence_set)
   return ret
       
+def parseAllSentenceEvidence(evidenceStr: str) -> list[str]:
+  evidence_list = parseEvidenceList(evidenceStr)
+  ret = []
+  for string in evidence_list:
+    ori_string = string
+    try:
+      evidence = ast.literal_eval(string.strip())
+    except JSONDecodeError:
+      print(f"ERROR!When parsing evidence: {string}")
+      print(ori_string)
+      
+    evidence_id = evidence['content']
+    for item in evidence_id:
+      l = item.split('_')
+      if l[-2]== 'sentence':
+        ret.append(item)
+
+  return ret
         
       
