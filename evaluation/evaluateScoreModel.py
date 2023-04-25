@@ -48,6 +48,7 @@ def evaluate_score_model(
             label = line.label
             evidence_dict = parseEvidence(evidence)
             evidence_sentences = parseAllSentenceEvidence(evidence)
+            evidence_sentences_content = [db_connection.queryWikiSentence(id) for id in evidence_sentences]
             # evidence_sentences = [item for sublist in evidence_sentences for item in sublist]
             if len(evidence_dict.keys())==0:
                 # ignore claim with tabular evidence
@@ -97,6 +98,7 @@ def evaluate_score_model(
                 result_dict['table_title'] = title
                 result_dict['table_content'] = table_content
                 result_dict['sentence_evidence'] = evidence_sentences
+                result_dict['sentene_evidence_content'] = evidence_sentences_content
                 
                 result_dict['annotated_cells'] = relevant_ids
                 result_dict['label'] = label
